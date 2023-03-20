@@ -69,6 +69,7 @@ def add_cupcake():
 
     return (jsonify(cupcake=serialized), 201)
 
+
 @app.route("/api/cupcakes/<int:cupcake_id>", methods=["PATCH"])
 def update_cupcake(cupcake_id):
     """Update a cupcake using the id.
@@ -88,6 +89,7 @@ def update_cupcake(cupcake_id):
     serialized = cupcake.serialize()
 
     return jsonify(cupcake=serialized)
+
 
 @app.route("/api/cupcakes/<int:cupcake_id>", methods=["DELETE"])
 def delete_cupcake(cupcake_id):
