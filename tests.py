@@ -10,7 +10,6 @@ from models import db, Cupcake, connect_db
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
 
-connect_db(app)
 
 db.drop_all()
 db.create_all()
