@@ -23,3 +23,12 @@ connect_db(app)     # sql-alchemy
 
 debug = DebugToolbarExtension(app)  # debug
 
+@app.route("/api/cupcakes", method=["GET"])
+def get_all_cupcakes():
+    """Return JSON {cupcakes: [{id, flavor, size, rating, image}, ...]}"""
+
+    cupcakes = Cupcake.query.all()
+    serialized = [c.serialize() for c in cupcakes]
+
+    return jsonify(cupcakes=serialized)
+
