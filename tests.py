@@ -135,6 +135,8 @@ class CupcakeViewsTestCase(TestCase):
                 }
             })
             self.assertEqual(num_cupcakes_before_update, Cupcake.query.count())
+        # Add pessimissistic test case - assert 404 status code
+
 
     def test_delete_cupcake(self):
         """Tests for deleting cupcake"""
@@ -146,40 +148,58 @@ class CupcakeViewsTestCase(TestCase):
             response = client.delete(url)
 
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.json, {"deleted": [self.cupcake_id]})
+            self.assertEqual(response.json, {"deleted": self.cupcake_id})
             self.assertEqual(
                 (num_cupcakes_before_delete - 1),
                 Cupcake.query.count()
             )
+        # Add pessimissistic test case - assert 404 status code
 
-    def test_create_and_update_cupcake_with_delete(self):
-        with app.test_client() as client:
-            base_url = "/api/cupcakes"
 
-            starting_num_cupcakes = Cupcake.query.count()
 
-            response = client.post(base_url, json=CUPCAKE_DATA_2)
 
-            self.assertEqual(response.status_code, 201)
-            self.assertIsInstance(response.json['cupcake']['id'], int)
 
-            cupcake_id = response.json["cupcake"]["id"]
 
-            response = client.patch(
-                f"{base_url}/{cupcake_id}",
-                json=UPDATE_CUPCAKE_DATA
-            )
 
-            self.assertEqual(
-                response.json,
-                {"cupcake": {
-                    'id': cupcake_id,
-                    'flavor': 'mint-chip',
-                    'rating': 15,
-                    'size': 'TestSize2',
-                    'image': "http://test.com/cupcake2.jpg"
-                }})
 
-            client.delete(f"{base_url}/{cupcake_id}")
 
-            self.assertEqual(starting_num_cupcakes, Cupcake.query.count())
+
+
+
+
+
+
+# FOR LEARNING REFERENCE BUT DON"T NEED/ REPETITIVE:
+    # def test_create_and_update_cupcake_with_delete(self):
+    #     with app.test_client() as client:
+    #         base_url = "/api/cupcakes"
+
+    #         starting_num_cupcakes = Cupcake.query.count()
+
+    #         response = client.post(base_url, json=CUPCAKE_DATA_2)
+
+    #         self.assertEqual(response.status_code, 201)
+    #         self.assertIsInstance(response.json['cupcake']['id'], int)
+
+    #         cupcake_id = response.json["cupcake"]["id"]
+
+    #         response = client.patch(
+    #             f"{base_url}/{cupcake_id}",
+    #             json=UPDATE_CUPCAKE_DATA
+    #         )
+
+    #         self.assertEqual(
+    #             response.json,
+    #             {"cupcake": {
+    #                 'id': cupcake_id,
+    #                 'flavor': 'mint-chip',
+    #                 'rating': 15,
+    #                 'size': 'TestSize2',
+    #                 'image': "http://test.com/cupcake2.jpg"
+    #             }})
+
+    #         client.delete(f"{base_url}/{cupcake_id}")
+
+    #         self.assertEqual(starting_num_cupcakes, Cupcake.query.count())
+
+    #
