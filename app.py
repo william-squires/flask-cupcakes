@@ -2,7 +2,7 @@
 
 import os
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 
 from models import db, connect_db, Cupcake, DEFAULT_IMAGE_URL
@@ -23,6 +23,11 @@ connect_db(app)
 
 debug = DebugToolbarExtension(app)  # debug
 
+@app.get("/")
+def show_home():
+    """Renders homepage"""
+
+    return render_template("index.html")
 
 @app.get("/api/cupcakes")
 def get_all_cupcakes():
