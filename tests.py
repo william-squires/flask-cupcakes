@@ -1,4 +1,4 @@
-from models import db, Cupcake, connect_db
+from models import db, Cupcake
 from app import app
 from unittest import TestCase
 import os
