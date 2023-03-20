@@ -5,7 +5,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import db, connect_db, Cupcake
+from models import db, connect_db, Cupcake, DEFAULT_IMAGE_URL
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "oh-so-secret"
@@ -70,7 +70,7 @@ def add_cupcake():
     return (jsonify(cupcake=serialized), 201)
 
 
-@app.route("/api/cupcakes/<int:cupcake_id>", methods=["PATCH"])
+@app.patch("/api/cupcakes/<int:cupcake_id>")
 def update_cupcake(cupcake_id):
     """Update a cupcake using the id.
     Takes JSON {flavor, size, rating, image} - All fields optional.
@@ -82,7 +82,7 @@ def update_cupcake(cupcake_id):
     cupcake.flavor = request.json.get("flavor", cupcake.flavor)
     cupcake.size = request.json.get("size", cupcake.size)
     cupcake.rating = request.json.get("rating", cupcake.rating)
-    cupcake.image = request.json.get("image", cupcake.image)
+    cupcake.image = request.json.get("image", cupcake.image) or DEFAULT_IMAGE_URL
 
     db.session.commit()
 
@@ -91,7 +91,7 @@ def update_cupcake(cupcake_id):
     return jsonify(cupcake=serialized)
 
 
-@app.route("/api/cupcakes/<int:cupcake_id>", methods=["DELETE"])
+@app.delete("/api/cupcakes/<int:cupcake_id>")
 def delete_cupcake(cupcake_id):
     """Deletes a cupcake by id.
     Returns JSON {deleted: [cupcake-id]}
@@ -102,4 +102,4 @@ def delete_cupcake(cupcake_id):
     db.session.delete(cupcake)
     db.session.commit()
 
-    return jsonify(deleted=[cupcake_id])
+    return jsonify(deleted=cupcake_id)
