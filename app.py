@@ -52,7 +52,7 @@ def get_cupcake(cupcake_id):
 def add_cupcake():
     """Adds cupcake to database. If no image is provided, gives a default image.
       Takes JSON {flavor, size, rating, image(optional)}
-      Returns JSON {cupcake: {id, flavor, size, rating, image}} 
+      Returns JSON {cupcake: {id, flavor, size, rating, image}}
       """
 
     cupcake = Cupcake(
@@ -68,3 +68,24 @@ def add_cupcake():
     serialized = cupcake.serialize()
 
     return (jsonify(cupcake=serialized), 201)
+
+@app.route("/api/cupcakes/<int:cupcake_id>", methods=["PATCH"])
+def update_cupcake(cupcake_id):
+    """Update a cupcake using the id.
+    Takes JSON {flavor, size, rating, image} - All fields optional.
+    Returns JSON of updated cupcake {cupcake: {id, flavor, size, rating, image}}
+    """
+
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+
+    cupcake.flavor = request.json.get("flavor", cupcake.flavor)
+    cupcake.size = request.json.get("size", cupcake.size)
+    cupcake.rating = request.json.get("rating", cupcake.rating)
+    cupcake.image = request.json.get("image", cupcake.image)
+
+    db.session.commit()
+
+    serialized = cupcake.serialize()
+
+    return jsonify(cupcake=serialized)
+
