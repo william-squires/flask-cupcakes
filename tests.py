@@ -32,6 +32,7 @@ UPDATE_CUPCAKE_DATA = {
     "rating": 15
 }
 
+
 class CupcakeViewsTestCase(TestCase):
     """Tests for views of API."""
 
@@ -151,7 +152,6 @@ class CupcakeViewsTestCase(TestCase):
                 Cupcake.query.count()
             )
 
-
     def test_create_and_update_cupcake_with_delete(self):
         with app.test_client() as client:
             base_url = "/api/cupcakes"
@@ -183,5 +183,3 @@ class CupcakeViewsTestCase(TestCase):
             client.delete(f"{base_url}/{cupcake_id}")
 
             self.assertEqual(starting_num_cupcakes, Cupcake.query.count())
-
-
