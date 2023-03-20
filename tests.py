@@ -27,6 +27,10 @@ CUPCAKE_DATA_2 = {
     "image": "http://test.com/cupcake2.jpg"
 }
 
+UPDATE_CUPCAKE_DATA = {
+    "flavor": "mint-chip",
+    "rating": 10
+}
 
 class CupcakeViewsTestCase(TestCase):
     """Tests for views of API."""
@@ -117,7 +121,7 @@ class CupcakeViewsTestCase(TestCase):
 
             response = client.patch(
                 f"/api/cupcakes/{self.cupcake_id}",
-                json={"flavor": "mint-chip", "rating": 10}
+                json=UPDATE_CUPCAKE_DATA
             )
 
             self.assertEqual(response.status_code, 200)
@@ -135,12 +139,21 @@ class CupcakeViewsTestCase(TestCase):
             })
             self.assertEqual(num_cupcakes_before_update, Cupcake.query.count())
 
-    # def test_delete_cupcake(self):
-    #     """Tests for deleting cupcake"""
+    def test_delete_cupcake(self):
+        """Tests for deleting cupcake"""
 
-    #     # get number cupcakes before deleting
-    #     # test JSON returned
-    #     # test/assert number of cupcakes is 1 less
+        with app.test_client() as client:
+            num_cupcakes_before_delete = Cupcake.query.count()
+
+            response = client.delete(f"/api/cupcakes/{self.cupcake_id}")
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, {"deleted": [self.cupcake_id]})
+            self.assertEqual(
+                (num_cupcakes_before_delete - 1),
+                Cupcake.query.count()
+            )
+
 
     # def test_create_and_update_cupcake_with_delete(self):
     #     with app.test_client() as client:
