@@ -1,11 +1,10 @@
+from models import db, Cupcake, connect_db
+from app import app
+from unittest import TestCase
 import os
 
 os.environ["DATABASE_URL"] = 'postgresql:///cupcakes_test'
 
-from unittest import TestCase
-
-from app import app
-from models import db, Cupcake, connect_db
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -109,3 +108,56 @@ class CupcakeViewsTestCase(TestCase):
             })
 
             self.assertEqual(Cupcake.query.count(), 2)
+
+    def test_update_cupcake(self):
+        """Tests for updating a cupcake info with Patch request"""
+
+        with app.test_client() as client:
+            num_cupcakes_before_update = Cupcake.query.count()
+
+            response = client.patch(
+                f"/api/cupcakes/{self.cupcake_id}",
+                json={"flavor": "mint-chip", "rating": 10}
+            )
+
+            self.assertEqual(response.status_code, 200)
+
+            data = response.json.copy()
+
+            self.assertEqual(data, {
+                "cupcake": {
+                    "id": self.cupcake_id,
+                    "flavor": "mint-chip",
+                    "rating": 10,
+                    "size": "TestSize",
+                    "image": 'http://test.com/cupcake.jpg'
+                }
+            })
+            self.assertEqual(num_cupcakes_before_update, Cupcake.query.count())
+
+    # def test_delete_cupcake(self):
+    #     """Tests for deleting cupcake"""
+
+    #     # get number cupcakes before deleting
+    #     # test JSON returned
+    #     # test/assert number of cupcakes is 1 less
+
+    # def test_create_and_update_cupcake_with_delete(self):
+    #     with app.test_client() as client:
+    #         resp = client.post(
+    #             "/desserts", json={
+    #                 "name": "TestCake2",
+    #                 "calories": 20,
+    #             })
+    #         self.assertEqual(resp.status_code, 201)
+
+    #         # don't know what ID it will be, so test then remove
+    #         self.assertIsInstance(resp.json['dessert']['id'], int)
+    #         data = resp.json.copy()
+    #         del data['dessert']['id']
+
+    #         self.assertEqual(
+    #             data,
+    #             {"dessert": {'name': 'TestCake2', 'calories': 20}})
+
+    #         self.assertEqual(Dessert.query.count(), 2)
